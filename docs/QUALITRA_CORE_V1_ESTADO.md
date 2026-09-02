@@ -2,7 +2,7 @@
 
 **Documento operativo:** Sí  
 **Plan funcional:** V1.1  
-**Última actualización:** 2 de septiembre de 2026
+**Última actualización:** 2 de septiembre de 2026 (M00 entregado)
 
 Este archivo registra el avance. No modifica el alcance funcional maestro.
 
@@ -10,7 +10,7 @@ Este archivo registra el avance. No modifica el alcance funcional maestro.
 
 | Módulo | Nombre | Estado |
 | --- | --- | --- |
-| M00 | Base operativa y propietario inicial | AUTORIZADO |
+| M00 | Base operativa y propietario inicial | LISTO PARA VALIDACIÓN HUMANA |
 | M01 | Usuarios, roles y permisos | BLOQUEADO |
 | M02 | Tipos de registro, campos, catálogos y cálculos | BLOQUEADO |
 | M03 | Constructor de formularios | BLOQUEADO |
