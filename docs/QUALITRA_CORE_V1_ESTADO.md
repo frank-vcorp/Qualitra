@@ -2,7 +2,8 @@
 
 **Documento operativo:** Sí  
 **Plan funcional:** V1.1  
-**Última actualización:** 2 de septiembre de 2026 (M00 entregado)
+**Última actualización:** 2 de septiembre de 2026  
+**Despliegue staging:** https://qualitra.vector-ia.mx (M00 entregado)
 
 Este archivo registra el avance. No modifica el alcance funcional maestro.
 
