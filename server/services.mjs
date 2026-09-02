@@ -162,6 +162,13 @@ export async function setLogoPath(logoPath) {
   return rows[0]
 }
 
+export async function clearLogoPath() {
+  const { rows } = await query(
+    `UPDATE company_settings SET logo_path = NULL, updated_at = NOW() WHERE id = 1 RETURNING *`,
+  )
+  return rows[0]
+}
+
 export async function recordAudit({ action, actorEmail, actorId, metadata = {}, ipAddress }) {
   await query(
     `INSERT INTO audit_events (action, actor_email, actor_id, metadata, ip_address)

@@ -26,6 +26,7 @@ import {
   resetOwnerPassword,
   updateCompanySettings,
   setLogoPath,
+  clearLogoPath,
   recordAudit,
   listRecentAudit,
   countUnusedRecoveryCodes,
@@ -222,7 +223,14 @@ export function createApiRouter() {
 
   router.get('/settings', ...authChain, requirePermission('view'), async (_req, res) => {
     const settings = await getCompanySettings()
-    res.json({ settings: settings ?? {} })
+    const safe = { ...(settings ?? {}) }
+    if (safe.logo_path) {
+      const fullPath = path.join(dataDir, safe.logo_path)
+      if (!existsSync(fullPath)) {
+        safe.logo_path = null
+      }
+    }
+    res.json({ settings: safe })
   })
 
   router.put('/settings', ...authChain, requirePermission('configure'), async (req, res) => {
@@ -268,13 +276,21 @@ export function createApiRouter() {
     res.json({ settings: updated, logoUrl: `/api/settings/logo/file?v=${Date.now()}` })
   })
 
-  router.get('/settings/logo/file', ...authChain, requirePermission('view'), async (_req, res) => {
+  router.get('/settings/logo/file', ...authChain, requirePermission('view'), async (req, res) => {
     const settings = await getCompanySettings()
     if (!settings?.logo_path) {
       return res.status(404).json({ error: 'Sin logotipo' })
     }
     const fullPath = path.join(dataDir, settings.logo_path)
     if (!existsSync(fullPath)) {
+      await clearLogoPath()
+      await recordAudit({
+        action: 'settings.logo_missing',
+        actorEmail: req.user.email,
+        actorId: req.user.id,
+        metadata: { path: settings.logo_path },
+        ipAddress: clientIp(req),
+      })
       return res.status(404).json({ error: 'Archivo no encontrado' })
     }
     res.sendFile(fullPath)

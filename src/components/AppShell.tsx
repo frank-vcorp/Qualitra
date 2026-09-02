@@ -35,7 +35,12 @@ export function AppShell({ user, onLogout }: Props) {
       <header className="topbar">
         <div className="brand">
           {logoUrl ? (
-            <img src={logoUrl} alt="Logotipo" className="brand-logo" />
+            <img
+              src={logoUrl}
+              alt="Logotipo"
+              className="brand-logo"
+              onError={() => setLogoUrl(null)}
+            />
           ) : (
             <div className="brand-placeholder">{companyInitials(settings?.company_name ?? 'Qualitra')}</div>
           )}

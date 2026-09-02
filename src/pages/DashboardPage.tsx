@@ -148,7 +148,14 @@ export function DashboardPage({ user }: Props) {
                 }}
               />
             </label>
-            {logoUrl && <img src={logoUrl} alt="Logo actual" className="preview-logo" />}
+              {logoUrl && (
+                <img
+                  src={logoUrl}
+                  alt="Logo actual"
+                  className="preview-logo"
+                  onError={() => setLogoUrl(null)}
+                />
+              )}
             {message && <p className="success">{message}</p>}
             {error && <p className="error">{error}</p>}
             <button type="submit" className="btn primary" disabled={saving}>

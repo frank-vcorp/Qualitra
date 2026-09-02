@@ -70,6 +70,7 @@ export function formatAction(action: string) {
     'auth.recovery_success': 'Contraseña restablecida',
     'settings.updated': 'Configuración actualizada',
     'settings.logo_updated': 'Logotipo actualizado',
+    'settings.logo_missing': 'Logotipo no encontrado (referencia limpiada)',
     'user.created': 'Usuario creado',
     'user.updated': 'Usuario actualizado',
     'user.deactivated': 'Usuario desactivado',
