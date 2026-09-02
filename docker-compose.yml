@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: qualitra
+      POSTGRES_PASSWORD: qualitra
+      POSTGRES_DB: qualitra
+    ports:
+      - "5433:5432"
+    volumes:
+      - qualitra_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qualitra"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    ports:
+      - "43123:43123"
+    environment:
+      PORT: 43123
+      NODE_ENV: production
+      DATABASE_URL: postgresql://qualitra:qualitra@db:5432/qualitra
+      SESSION_SECRET: local-dev-secret-change-in-production-32chars
+      APP_VERSION: 0.1.0-m00
+    volumes:
+      - qualitra_data:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  qualitra_pg:
+  qualitra_data:
