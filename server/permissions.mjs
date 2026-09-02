@@ -31,9 +31,13 @@ export const SCOPE_LABELS = {
   all_authorized: 'Todos los autorizados',
 }
 
-/** @param {{ isOwner?: boolean, permissions?: Array<{ action: string, scope: string }>, hasImplementorAccess?: boolean }} user */
+function isOwnerUser(user) {
+  return Boolean(user?.isOwner ?? user?.is_owner)
+}
+
+/** @param {{ isOwner?: boolean, is_owner?: boolean, permissions?: Array<{ action: string, scope: string }>, hasImplementorAccess?: boolean }} user */
 export function hasPermission(user, action, scope = null) {
-  if (user?.isOwner) return true
+  if (isOwnerUser(user)) return true
   const perms = user?.permissions ?? []
   const matches = perms.filter((p) => p.action === action)
   if (matches.length === 0) return false
@@ -42,6 +46,6 @@ export function hasPermission(user, action, scope = null) {
 }
 
 export function hasImplementorAccess(user) {
-  if (user?.isOwner) return true
+  if (isOwnerUser(user)) return true
   return Boolean(user?.hasImplementorAccess)
 }

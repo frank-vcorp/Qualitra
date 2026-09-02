@@ -24,7 +24,8 @@ export function UsersPage() {
   }
 
   useEffect(() => {
-    load().catch((err) => setError(err.message))
+    load()
+      .catch((err) => setError(err instanceof Error ? err.message : 'Error al cargar usuarios'))
   }, [])
 
   async function createUser(e: FormEvent) {
@@ -123,6 +124,7 @@ export function UsersPage() {
 
       <section className="card full">
         <h2>Usuarios</h2>
+        {error && <p className="error">{error}</p>}
         <div className="table-wrap">
           <table>
             <thead>
