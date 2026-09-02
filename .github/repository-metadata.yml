@@ -1,0 +1,33 @@
+# Metadatos recomendados para el repositorio.
+# Este archivo documenta la configuración esperada del apartado About de GitHub.
+
+repository:
+  name: Qualitra
+  owner: frank-vcorp
+  visibility: public
+  default_branch: main
+  description: "Motor modular y self-hosted para construir sistemas de gestión de calidad configurables."
+  homepage: null
+  language: es-MX
+  status: planning
+  current_module: M00
+  deployment_target: Coolify
+  license: pending
+
+topics:
+  - quality-management
+  - qms
+  - low-code
+  - self-hosted
+  - forms
+  - workflow
+  - audit
+  - coolify
+  - typescript
+  - cursor
+
+documents:
+  entrypoint: CURSOR.md
+  functional_plan: docs/QUALITRA_CORE_V1_PLAN_FUNCIONAL_V1.1_CURSOR.md
+  module_status: docs/QUALITRA_CORE_V1_ESTADO.md
+  decisions: docs/QUALITRA_CORE_V1_DECISIONES.md
