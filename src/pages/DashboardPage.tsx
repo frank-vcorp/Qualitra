@@ -85,6 +85,11 @@ export function DashboardPage({ user }: Props) {
 
   return (
     <main className="grid">
+      {error && (
+        <section className="card full">
+          <p className="error">{error}</p>
+        </section>
+      )}
       {canConfigure && settings && (
         <section className="card">
           <h2>Configuración de empresa</h2>
