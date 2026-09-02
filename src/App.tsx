@@ -1,16 +1,22 @@
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { api } from './api'
-import type { Owner } from './types'
+import type { User } from './types'
 import { SetupPage } from './pages/SetupPage'
 import { LoginPage } from './pages/LoginPage'
 import { RecoveryPage } from './pages/RecoveryPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { UsersPage } from './pages/UsersPage'
+import { RolesPage } from './pages/RolesPage'
+import { PermissionDemoPage } from './pages/PermissionDemoPage'
+import { ImplementorPage } from './pages/ImplementorPage'
+import { AppShell } from './components/AppShell'
+import { can } from './types'
 
 export function App() {
   const [loading, setLoading] = useState(true)
   const [needsSetup, setNeedsSetup] = useState(false)
-  const [owner, setOwner] = useState<Owner | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const navigate = useNavigate()
 
   async function refresh() {
@@ -19,14 +25,14 @@ export function App() {
       const status = await api<{ needsSetup: boolean }>('/api/setup/status')
       setNeedsSetup(status.needsSetup)
       if (status.needsSetup) {
-        setOwner(null)
+        setUser(null)
         return
       }
       try {
-        const me = await api<{ owner: Owner }>('/api/auth/me')
-        setOwner(me.owner)
+        const me = await api<{ user: User }>('/api/auth/me')
+        setUser(me.user)
       } catch {
-        setOwner(null)
+        setUser(null)
       }
     } finally {
       setLoading(false)
@@ -45,6 +51,8 @@ export function App() {
     )
   }
 
+  const authed = Boolean(user)
+
   return (
     <Routes>
       <Route
@@ -52,14 +60,14 @@ export function App() {
         element={
           needsSetup ? (
             <SetupPage
-              onComplete={(newOwner) => {
-                setOwner(newOwner)
+              onComplete={(newUser) => {
+                setUser(newUser)
                 setNeedsSetup(false)
                 navigate('/')
               }}
             />
           ) : (
-            <Navigate to={owner ? '/' : '/login'} replace />
+            <Navigate to={authed ? '/' : '/login'} replace />
           )
         }
       />
@@ -68,46 +76,45 @@ export function App() {
         element={
           needsSetup ? (
             <Navigate to="/setup" replace />
-          ) : owner ? (
+          ) : authed ? (
             <Navigate to="/" replace />
           ) : (
             <LoginPage
               onLogin={(loggedIn) => {
-                setOwner(loggedIn)
+                setUser(loggedIn)
                 navigate('/')
               }}
             />
           )
         }
       />
+      <Route path="/recovery" element={needsSetup ? <Navigate to="/setup" replace /> : <RecoveryPage />} />
       <Route
-        path="/recovery"
         element={
           needsSetup ? (
             <Navigate to="/setup" replace />
-          ) : (
-            <RecoveryPage />
-          )
-        }
-      />
-      <Route
-        path="/"
-        element={
-          needsSetup ? (
-            <Navigate to="/setup" replace />
-          ) : owner ? (
-            <DashboardPage
-              owner={owner}
-              onLogout={() => {
-                setOwner(null)
-                navigate('/login')
-              }}
-            />
+          ) : authed && user ? (
+            <AppShell user={user} onLogout={() => setUser(null)} />
           ) : (
             <Navigate to="/login" replace />
           )
         }
-      />
+      >
+        <Route index element={user ? <DashboardPage user={user} /> : null} />
+        <Route
+          path="usuarios"
+          element={user && can(user, 'configure') ? <UsersPage /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="roles"
+          element={user && can(user, 'configure') ? <RolesPage /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="implementador"
+          element={user?.hasImplementorAccess ? <ImplementorPage /> : <Navigate to="/" replace />}
+        />
+        <Route path="permisos" element={user ? <PermissionDemoPage user={user} /> : null} />
+      </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

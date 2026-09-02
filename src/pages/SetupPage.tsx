@@ -1,9 +1,9 @@
 import { FormEvent, useState } from 'react'
 import { api } from '../api'
-import type { Owner } from '../types'
+import type { User } from '../types'
 
 type Props = {
-  onComplete: (owner: Owner) => void
+  onComplete: (user: User) => void
 }
 
 export function SetupPage({ onComplete }: Props) {
@@ -14,18 +14,18 @@ export function SetupPage({ onComplete }: Props) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [recoveryCodes, setRecoveryCodes] = useState<string[] | null>(null)
-  const [createdOwner, setCreatedOwner] = useState<Owner | null>(null)
+  const [createdUser, setCreatedUser] = useState<User | null>(null)
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      const res = await api<{ owner: Owner; recoveryCodes: string[] }>('/api/setup/owner', {
+      const res = await api<{ user: User; recoveryCodes: string[] }>('/api/setup/owner', {
         method: 'POST',
         body: JSON.stringify({ email, name, password, passwordConfirm }),
       })
-      setCreatedOwner(res.owner)
+      setCreatedUser(res.user)
       setRecoveryCodes(res.recoveryCodes)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al crear propietario')
@@ -34,7 +34,7 @@ export function SetupPage({ onComplete }: Props) {
     }
   }
 
-  if (recoveryCodes && createdOwner) {
+  if (recoveryCodes && createdUser) {
     return (
       <div className="shell narrow">
         <div className="card">
@@ -52,7 +52,7 @@ export function SetupPage({ onComplete }: Props) {
           <p className="warning">
             No volverán a mostrarse. Si los pierdes, necesitarás acceso al servidor para recuperar el sistema.
           </p>
-          <button type="button" className="btn primary wide" onClick={() => onComplete(createdOwner)}>
+          <button type="button" className="btn primary wide" onClick={() => onComplete(createdUser)}>
             Continuar al panel
           </button>
         </div>

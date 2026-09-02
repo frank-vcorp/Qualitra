@@ -7,6 +7,15 @@ import { mkdirSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { getPool } from './db.mjs'
 import {
+  attachUser,
+  clientIp,
+  publicUser,
+  requireAuth,
+  requirePermission,
+  setSessionUser,
+} from './auth.mjs'
+import { createAdminRouter, createDemoRouter, loginUser } from './admin-routes.mjs'
+import {
   createOwner,
   formatRecoveryCodes,
   generateRecoveryCodes,
@@ -19,9 +28,9 @@ import {
   setLogoPath,
   recordAudit,
   listRecentAudit,
-  verifyPassword,
   countUnusedRecoveryCodes,
 } from './services.mjs'
+import { loadAuthUser } from './users.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const dataDir = path.join(__dirname, '..', 'data')
@@ -44,16 +53,7 @@ const upload = multer({
   },
 })
 
-function clientIp(req) {
-  return req.headers['x-forwarded-for']?.toString().split(',')[0]?.trim() || req.ip
-}
-
-function requireAuth(req, res, next) {
-  if (!req.session?.ownerId) {
-    return res.status(401).json({ error: 'No autenticado' })
-  }
-  next()
-}
+const authChain = [requireAuth, attachUser]
 
 export function createApiRouter() {
   const router = express.Router()
@@ -69,7 +69,7 @@ export function createApiRouter() {
     res.json({
       ok: dbOk,
       service: 'qualitra',
-      version: process.env.APP_VERSION || '0.1.0-m00',
+      version: process.env.APP_VERSION || '0.2.0-m01',
       database: dbOk ? 'connected' : 'disconnected',
       uptimeSeconds: Math.floor(process.uptime()),
     })
@@ -113,9 +113,8 @@ export function createApiRouter() {
       ipAddress: clientIp(req),
     })
 
-    req.session.ownerId = owner.id
-    req.session.ownerEmail = owner.email
-    req.session.ownerName = owner.name
+    const authUser = await loadAuthUser(owner.id)
+    setSessionUser(req, authUser)
 
     await recordAudit({
       action: 'auth.login',
@@ -125,6 +124,7 @@ export function createApiRouter() {
     })
 
     res.status(201).json({
+      user: publicUser(authUser),
       owner: { id: owner.id, email: owner.email, name: owner.name },
       recoveryCodes: formatRecoveryCodes(plainCodes),
     })
@@ -136,8 +136,8 @@ export function createApiRouter() {
       return res.status(400).json({ error: 'Correo y contraseña son obligatorios' })
     }
 
-    const owner = await getOwnerWithPassword(email)
-    if (!owner || !(await verifyPassword(password, owner.password_hash))) {
+    const authUser = await loginUser(email, password)
+    if (!authUser) {
       await recordAudit({
         action: 'auth.login_failed',
         actorEmail: email.toLowerCase().trim(),
@@ -147,29 +147,26 @@ export function createApiRouter() {
       return res.status(401).json({ error: 'Correo o contraseña incorrectos' })
     }
 
-    req.session.ownerId = owner.id
-    req.session.ownerEmail = owner.email
-    req.session.ownerName = owner.name
+    setSessionUser(req, authUser)
 
     await recordAudit({
       action: 'auth.login',
-      actorEmail: owner.email,
-      actorId: owner.id,
+      actorEmail: authUser.email,
+      actorId: authUser.id,
       ipAddress: clientIp(req),
     })
 
-    res.json({
-      owner: { id: owner.id, email: owner.email, name: owner.name },
-    })
+    res.json({ user: publicUser(authUser), owner: { id: authUser.id, email: authUser.email, name: authUser.name } })
   })
 
-  router.post('/auth/logout', requireAuth, async (req, res) => {
-    const { ownerId, ownerEmail } = req.session
+  router.post('/auth/logout', requireAuth, attachUser, async (req, res) => {
+    const userId = req.session.userId ?? req.session.ownerId
+    const userEmail = req.session.userEmail ?? req.session.ownerEmail
     req.session.destroy(async () => {
       await recordAudit({
         action: 'auth.logout',
-        actorEmail: ownerEmail,
-        actorId: ownerId,
+        actorEmail: userEmail,
+        actorId: userId,
         ipAddress: clientIp(req),
       })
       res.clearCookie('qualitra.sid')
@@ -177,16 +174,10 @@ export function createApiRouter() {
     })
   })
 
-  router.get('/auth/me', async (req, res) => {
-    if (!req.session?.ownerId) {
-      return res.status(401).json({ error: 'No autenticado' })
-    }
+  router.get('/auth/me', requireAuth, attachUser, async (req, res) => {
     res.json({
-      owner: {
-        id: req.session.ownerId,
-        email: req.session.ownerEmail,
-        name: req.session.ownerName,
-      },
+      user: publicUser(req.user),
+      owner: { id: req.user.id, email: req.user.email, name: req.user.name },
     })
   })
 
@@ -229,12 +220,12 @@ export function createApiRouter() {
     res.json({ ok: true, message: 'Contraseña restablecida. Inicia sesión con tu nueva contraseña.' })
   })
 
-  router.get('/settings', requireAuth, async (_req, res) => {
+  router.get('/settings', ...authChain, requirePermission('view'), async (_req, res) => {
     const settings = await getCompanySettings()
     res.json({ settings: settings ?? {} })
   })
 
-  router.put('/settings', requireAuth, async (req, res) => {
+  router.put('/settings', ...authChain, requirePermission('configure'), async (req, res) => {
     const body = req.body ?? {}
     const current = await getCompanySettings()
     const updated = await updateCompanySettings({
@@ -249,19 +240,16 @@ export function createApiRouter() {
 
     await recordAudit({
       action: 'settings.updated',
-      actorEmail: req.session.ownerEmail,
-      actorId: req.session.ownerId,
-      metadata: {
-        company_name: updated.company_name,
-        system_name: updated.system_name,
-      },
+      actorEmail: req.user.email,
+      actorId: req.user.id,
+      metadata: { company_name: updated.company_name, system_name: updated.system_name },
       ipAddress: clientIp(req),
     })
 
     res.json({ settings: updated })
   })
 
-  router.post('/settings/logo', requireAuth, upload.single('logo'), async (req, res) => {
+  router.post('/settings/logo', ...authChain, requirePermission('configure'), upload.single('logo'), async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: 'Archivo de imagen requerido (PNG, JPG, WebP, GIF, máx. 2 MB)' })
     }
@@ -271,8 +259,8 @@ export function createApiRouter() {
 
     await recordAudit({
       action: 'settings.logo_updated',
-      actorEmail: req.session.ownerEmail,
-      actorId: req.session.ownerId,
+      actorEmail: req.user.email,
+      actorId: req.user.id,
       metadata: { filename: req.file.filename },
       ipAddress: clientIp(req),
     })
@@ -280,7 +268,7 @@ export function createApiRouter() {
     res.json({ settings: updated, logoUrl: `/api/settings/logo/file?v=${Date.now()}` })
   })
 
-  router.get('/settings/logo/file', requireAuth, async (_req, res) => {
+  router.get('/settings/logo/file', ...authChain, requirePermission('view'), async (_req, res) => {
     const settings = await getCompanySettings()
     if (!settings?.logo_path) {
       return res.status(404).json({ error: 'Sin logotipo' })
@@ -292,7 +280,7 @@ export function createApiRouter() {
     res.sendFile(fullPath)
   })
 
-  router.get('/status', requireAuth, async (req, res) => {
+  router.get('/status', ...authChain, requirePermission('view'), async (req, res) => {
     let dbOk = false
     try {
       await getPool().query('SELECT 1')
@@ -301,28 +289,28 @@ export function createApiRouter() {
       dbOk = false
     }
 
-    const unusedCodes = await countUnusedRecoveryCodes(req.session.ownerId)
+    const unusedCodes = req.user.is_owner ? await countUnusedRecoveryCodes(req.user.id) : null
 
     res.json({
-      version: process.env.APP_VERSION || '0.1.0-m00',
-      module: 'M00',
+      version: process.env.APP_VERSION || '0.2.0-m01',
+      module: 'M01',
       environment: process.env.NODE_ENV || 'development',
       database: dbOk ? 'connected' : 'disconnected',
       uptimeSeconds: Math.floor(process.uptime()),
       startedAt: new Date(Date.now() - process.uptime() * 1000).toISOString(),
       recoveryCodesRemaining: unusedCodes,
-      build: {
-        node: process.version,
-        commit: process.env.GIT_COMMIT || null,
-      },
+      build: { node: process.version, commit: process.env.GIT_COMMIT || null },
     })
   })
 
-  router.get('/audit', requireAuth, async (req, res) => {
+  router.get('/audit', ...authChain, requirePermission('audit'), async (req, res) => {
     const limit = Math.min(Number(req.query.limit) || 50, 100)
     const events = await listRecentAudit(limit)
     res.json({ events })
   })
+
+  router.use('/admin', createAdminRouter())
+  router.use('/demo', createDemoRouter())
 
   return router
 }

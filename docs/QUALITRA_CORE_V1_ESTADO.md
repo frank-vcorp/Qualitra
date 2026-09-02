@@ -12,7 +12,7 @@ Este archivo registra el avance. No modifica el alcance funcional maestro.
 | Módulo | Nombre | Estado |
 | --- | --- | --- |
 | M00 | Base operativa y propietario inicial | APROBADO |
-| M01 | Usuarios, roles y permisos | AUTORIZADO |
+| M01 | Usuarios, roles y permisos | LISTO PARA VALIDACIÓN HUMANA |
 | M02 | Tipos de registro, campos, catálogos y cálculos | BLOQUEADO |
 | M03 | Constructor de formularios | BLOQUEADO |
 | M04 | Captura y consulta de registros | BLOQUEADO |

@@ -1,10 +1,10 @@
 import { FormEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api'
-import type { Owner } from '../types'
+import type { User } from '../types'
 
 type Props = {
-  onLogin: (owner: Owner) => void
+  onLogin: (user: User) => void
 }
 
 export function LoginPage({ onLogin }: Props) {
@@ -18,11 +18,11 @@ export function LoginPage({ onLogin }: Props) {
     setError('')
     setLoading(true)
     try {
-      const res = await api<{ owner: Owner }>('/api/auth/login', {
+      const res = await api<{ user: User }>('/api/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       })
-      onLogin(res.owner)
+      onLogin(res.user)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo iniciar sesión')
     } finally {

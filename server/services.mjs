@@ -39,13 +39,16 @@ export async function verifyPassword(password, hash) {
 }
 
 export async function getOwner() {
-  const { rows } = await query('SELECT id, email, name, created_at FROM owners LIMIT 1')
+  const { rows } = await query(
+    `SELECT id, email, name, created_at FROM users WHERE is_owner = TRUE LIMIT 1`,
+  )
   return rows[0] ?? null
 }
 
 export async function getOwnerWithPassword(email) {
   const { rows } = await query(
-    'SELECT id, email, name, password_hash, created_at FROM owners WHERE email = $1',
+    `SELECT id, email, name, password_hash, created_at FROM users
+     WHERE email = $1 AND is_owner = TRUE`,
     [email.toLowerCase().trim()],
   )
   return rows[0] ?? null
@@ -54,18 +57,34 @@ export async function getOwnerWithPassword(email) {
 export async function createOwner({ email, name, password, recoveryCodesPlain }) {
   const passwordHash = await hashPassword(password)
   const { rows } = await query(
-    `INSERT INTO owners (email, name, password_hash)
-     VALUES ($1, $2, $3)
+    `INSERT INTO users (email, name, password_hash, is_active, is_owner)
+     VALUES ($1, $2, $3, TRUE, TRUE)
      RETURNING id, email, name, created_at`,
     [email.toLowerCase().trim(), name.trim(), passwordHash],
   )
   const owner = rows[0]
 
+  // Compatibilidad con tabla owners legacy
+  await query(
+    `INSERT INTO owners (id, email, name, password_hash)
+     VALUES ($1, $2, $3, $4)
+     ON CONFLICT (email) DO NOTHING`,
+    [owner.id, owner.email, owner.name, passwordHash],
+  )
+
   for (const code of recoveryCodesPlain) {
     const codeHash = await hashRecoveryCode(code)
     await query(
-      'INSERT INTO recovery_codes (owner_id, code_hash) VALUES ($1, $2)',
+      `INSERT INTO recovery_codes (owner_id, user_id, code_hash) VALUES ($1, $1, $2)`,
       [owner.id, codeHash],
+    )
+  }
+
+  const adminRole = await query(`SELECT id FROM roles WHERE slug = 'administrador' LIMIT 1`)
+  if (adminRole.rows[0]) {
+    await query(
+      `INSERT INTO user_roles (user_id, role_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+      [owner.id, adminRole.rows[0].id],
     )
   }
 
@@ -78,11 +97,11 @@ export async function createOwner({ email, name, password, recoveryCodesPlain })
   return owner
 }
 
-export async function consumeRecoveryCode(ownerId, code) {
+export async function consumeRecoveryCode(userId, code) {
   const { rows } = await query(
     `SELECT id, code_hash FROM recovery_codes
-     WHERE owner_id = $1 AND used_at IS NULL`,
-    [ownerId],
+     WHERE (user_id = $1 OR owner_id = $1) AND used_at IS NULL`,
+    [userId],
   )
 
   for (const row of rows) {
@@ -95,9 +114,13 @@ export async function consumeRecoveryCode(ownerId, code) {
   return false
 }
 
-export async function resetOwnerPassword(ownerId, newPassword) {
+export async function resetOwnerPassword(userId, newPassword) {
   const passwordHash = await hashPassword(newPassword)
-  await query('UPDATE owners SET password_hash = $1 WHERE id = $2', [passwordHash, ownerId])
+  await query('UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2', [
+    passwordHash,
+    userId,
+  ])
+  await query('UPDATE owners SET password_hash = $1 WHERE id = $2', [passwordHash, userId])
 }
 
 export async function getCompanySettings() {
@@ -158,10 +181,11 @@ export async function listRecentAudit(limit = 50) {
   return rows
 }
 
-export async function countUnusedRecoveryCodes(ownerId) {
+export async function countUnusedRecoveryCodes(userId) {
   const { rows } = await query(
-    'SELECT COUNT(*)::int AS count FROM recovery_codes WHERE owner_id = $1 AND used_at IS NULL',
-    [ownerId],
+    `SELECT COUNT(*)::int AS count FROM recovery_codes
+     WHERE (user_id = $1 OR owner_id = $1) AND used_at IS NULL`,
+    [userId],
   )
   return rows[0]?.count ?? 0
 }

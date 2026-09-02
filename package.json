@@ -2,7 +2,7 @@
   "name": "qualitra",
   "description": "Motor modular self-hosted para sistemas de gestión de calidad — Qualitra Core V1",
   "private": true,
-  "version": "0.1.0-m00",
+  "version": "0.2.0-m01",
   "type": "module",
   "engines": {
     "node": ">=20"

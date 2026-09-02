@@ -1,9 +1,31 @@
-import './styles.css'
-
-export type Owner = {
+export type User = {
   id: string
   email: string
   name: string
+  phone?: string | null
+  isOwner?: boolean
+  isActive?: boolean
+  permissions: string[] | 'all'
+  hasImplementorAccess?: boolean
+}
+
+export type Role = {
+  id: string
+  slug: string
+  name: string
+  description?: string | null
+  is_system: boolean
+  permissions: Array<{ action: string; scope: string }>
+}
+
+export type UserRow = {
+  id: string
+  email: string
+  name: string
+  phone?: string | null
+  is_active: boolean
+  is_owner: boolean
+  roles: Array<{ id: string; slug: string; name: string }>
 }
 
 export type CompanySettings = {
@@ -25,6 +47,12 @@ export type AuditEvent = {
   created_at: string
 }
 
+export function can(user: User | null, action: string) {
+  if (!user) return false
+  if (user.permissions === 'all' || user.isOwner) return true
+  return user.permissions.some((p) => p.startsWith(`${action}:`))
+}
+
 export function companyInitials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean)
   if (parts.length === 0) return 'Q'
@@ -42,6 +70,48 @@ export function formatAction(action: string) {
     'auth.recovery_success': 'Contraseña restablecida',
     'settings.updated': 'Configuración actualizada',
     'settings.logo_updated': 'Logotipo actualizado',
+    'user.created': 'Usuario creado',
+    'user.updated': 'Usuario actualizado',
+    'user.deactivated': 'Usuario desactivado',
+    'user.sessions_revoked': 'Sesiones revocadas',
+    'role.created': 'Rol creado',
+    'role.updated': 'Rol actualizado',
+    'role.deleted': 'Rol eliminado',
+    'implementor.granted': 'Acceso Implementador concedido',
+    'implementor.revoked': 'Acceso Implementador revocado',
   }
   return map[action] ?? action
+}
+
+export const ACTION_OPTIONS = [
+  'view',
+  'create',
+  'edit',
+  'archive',
+  'export',
+  'approve',
+  'configure',
+  'audit',
+  'integrations',
+] as const
+
+export const SCOPE_OPTIONS = ['own', 'assigned', 'type_allowed', 'all_authorized'] as const
+
+export const ACTION_LABELS: Record<string, string> = {
+  view: 'Ver',
+  create: 'Crear',
+  edit: 'Editar',
+  archive: 'Archivar',
+  export: 'Exportar',
+  approve: 'Aprobar',
+  configure: 'Configurar',
+  audit: 'Auditoría',
+  integrations: 'Integraciones',
+}
+
+export const SCOPE_LABELS: Record<string, string> = {
+  own: 'Propios',
+  assigned: 'Asignados',
+  type_allowed: 'Por tipo',
+  all_authorized: 'Todos autorizados',
 }
