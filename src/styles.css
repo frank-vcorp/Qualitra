@@ -724,3 +724,106 @@ td {
 .option-list li.inactive {
   opacity: 0.65;
 }
+
+.form-preview {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.preview-section {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fafbfc;
+}
+
+.preview-section h3 {
+  margin: 0 0 0.75rem;
+}
+
+.preview-header {
+  margin: 0.5rem 0;
+}
+
+.preview-info {
+  margin-bottom: 0.75rem;
+}
+
+.preview-group {
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.preview-group-row {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  margin-bottom: 0.75rem;
+}
+
+.preview-field.compact input {
+  min-height: 40px;
+}
+
+.field-help {
+  display: block;
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+.preview-calculated {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  background: #eef4fb;
+  border-radius: 10px;
+  margin: 0.5rem 0;
+}
+
+.result-card {
+  background: linear-gradient(135deg, #0f6cbd 0%, #0b5698 100%);
+  color: #fff;
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin: 1rem 0;
+}
+
+.result-card .eyebrow {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.result-score {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0.25rem 0;
+}
+
+.result-label {
+  display: inline-block;
+  margin: 0.5rem 0;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.result-message {
+  margin: 0.75rem 0 0;
+  opacity: 0.95;
+}
+
+.element-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.element-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}

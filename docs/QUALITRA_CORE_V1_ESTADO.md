@@ -13,8 +13,8 @@ Este archivo registra el avance. No modifica el alcance funcional maestro.
 | --- | --- | --- |
 | M00 | Base operativa y propietario inicial | APROBADO |
 | M01 | Usuarios, roles y permisos | APROBADO |
-| M02 | Tipos de registro, campos, catálogos y cálculos | LISTO PARA VALIDACIÓN HUMANA |
-| M03 | Constructor de formularios | BLOQUEADO |
+| M02 | Tipos de registro, campos, catálogos y cálculos | APROBADO |
+| M03 | Constructor de formularios | LISTO PARA VALIDACIÓN HUMANA |
 | M04 | Captura y consulta de registros | BLOQUEADO |
 | M05 | Relaciones entre registros | BLOQUEADO |
 | M06 | Listados, vistas, filtros, dashboard y reportes | BLOQUEADO |
@@ -40,6 +40,13 @@ Estados permitidos:
 - APROBADO
 
 ## Validaciones
+
+### M02 — Tipos de registro, campos, catálogos y cálculos
+
+- **Fecha:** 12 de septiembre de 2026
+- **Resultado:** APROBADO
+- **Decisión:** `continua` (Frank — comprensión de tipos vs catálogos)
+- **Entorno:** https://qualitra.vector-ia.mx
 
 ### M01 — Usuarios, roles y permisos
 

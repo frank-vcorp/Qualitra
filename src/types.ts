@@ -86,6 +86,8 @@ export function formatAction(action: string) {
     'm02.demo_seeded': 'Caso demo M02 cargado',
     'm02.exported': 'Configuración M02 exportada',
     'm02.imported': 'Configuración M02 importada',
+    'form.created': 'Formulario creado',
+    'form.published': 'Formulario publicado',
   }
   return map[action] ?? action
 }

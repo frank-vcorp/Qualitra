@@ -11,6 +11,7 @@ import { RolesPage } from './pages/RolesPage'
 import { PermissionDemoPage } from './pages/PermissionDemoPage'
 import { ImplementorPage } from './pages/ImplementorPage'
 import { SchemaPage } from './pages/SchemaPage'
+import { FormsPage } from './pages/FormsPage'
 import { AppShell } from './components/AppShell'
 import { can } from './types'
 
@@ -113,6 +114,10 @@ export function App() {
         <Route
           path="estructuras"
           element={user && can(user, 'configure') ? <SchemaPage /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="formularios"
+          element={user && can(user, 'configure') ? <FormsPage /> : <Navigate to="/" replace />}
         />
         <Route
           path="implementador"
