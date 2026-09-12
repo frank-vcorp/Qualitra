@@ -32,6 +32,7 @@ import {
   countUnusedRecoveryCodes,
 } from './services.mjs'
 import { loadAuthUser } from './users.mjs'
+import { resetOwnerAccess } from './maintenance.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const dataDir = path.join(__dirname, '..', 'data')
@@ -79,6 +80,25 @@ export function createApiRouter() {
   router.get('/setup/status', async (_req, res) => {
     const owner = await getOwner()
     res.json({ needsSetup: !owner })
+  })
+
+  router.post('/maintenance/reset-owner', async (req, res) => {
+    const expected = process.env.OWNER_RESET_TOKEN
+    const provided = req.headers['x-reset-token']
+    if (!expected || provided !== expected) {
+      return res.status(404).json({ error: 'No encontrado' })
+    }
+    const email = req.body?.email ?? 'frank@vcorp.mx'
+    try {
+      const result = await resetOwnerAccess(email)
+      res.json({
+        ok: true,
+        message: 'Acceso restablecido. Guarda la contraseña y los códigos ahora.',
+        ...result,
+      })
+    } catch (err) {
+      res.status(400).json({ error: err instanceof Error ? err.message : 'Error al restablecer' })
+    }
   })
 
   router.post('/setup/owner', async (req, res) => {
