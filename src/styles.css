@@ -458,3 +458,269 @@ td {
 .file-btn {
   cursor: pointer;
 }
+
+.schema-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.schema-hero h2 {
+  margin-bottom: 0.35rem;
+}
+
+.banner-msg {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.schema-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.schema-tab {
+  min-height: 44px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.schema-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.schema-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(260px, 320px) 1fr;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .schema-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.schema-sidebar h3,
+.schema-editor h3 {
+  margin-top: 0;
+}
+
+.stack.compact {
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.type-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.type-card {
+  width: 100%;
+  text-align: left;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.type-card:hover,
+.type-card.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(15, 108, 189, 0.12);
+}
+
+.type-card strong {
+  font-size: 1rem;
+}
+
+.type-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+}
+
+.empty-hint,
+.small-help {
+  font-size: 0.9rem;
+}
+
+.schema-editor {
+  min-height: 420px;
+}
+
+.editor-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.field-grid-2 {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.field-grid-3 {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: end;
+}
+
+@media (max-width: 700px) {
+  .field-grid-2,
+  .field-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fields-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.fields-section-head h4 {
+  margin: 0;
+}
+
+.field-cards {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.field-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fafbfc;
+}
+
+.field-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.field-num {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.field-card-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.field-key {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  min-height: 48px;
+}
+
+.checkbox-label input {
+  width: auto;
+  min-height: auto;
+}
+
+.danger-text {
+  color: var(--danger);
+}
+
+.preview-box {
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.preview-box h4 {
+  margin: 0 0 0.35rem;
+}
+
+.preview-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.preview-field .req {
+  color: var(--danger);
+  margin-left: 0.15rem;
+}
+
+.preview-field textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: #f8fafc;
+}
+
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.editor-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.option-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.option-list li {
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fafbfc;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.option-list li.inactive {
+  opacity: 0.65;
+}
