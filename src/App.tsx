@@ -10,6 +10,7 @@ import { UsersPage } from './pages/UsersPage'
 import { RolesPage } from './pages/RolesPage'
 import { PermissionDemoPage } from './pages/PermissionDemoPage'
 import { ImplementorPage } from './pages/ImplementorPage'
+import { SchemaPage } from './pages/SchemaPage'
 import { AppShell } from './components/AppShell'
 import { can } from './types'
 
@@ -108,6 +109,10 @@ export function App() {
         <Route
           path="roles"
           element={user && can(user, 'configure') ? <RolesPage /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="estructuras"
+          element={user && can(user, 'configure') ? <SchemaPage /> : <Navigate to="/" replace />}
         />
         <Route
           path="implementador"

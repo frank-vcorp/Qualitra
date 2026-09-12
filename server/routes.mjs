@@ -15,6 +15,7 @@ import {
   setSessionUser,
 } from './auth.mjs'
 import { createAdminRouter, createDemoRouter, loginUser } from './admin-routes.mjs'
+import { createM02Router } from './m02-routes.mjs'
 import {
   createOwner,
   formatRecoveryCodes,
@@ -71,7 +72,7 @@ export function createApiRouter() {
     res.json({
       ok: dbOk,
       service: 'qualitra',
-      version: process.env.APP_VERSION || '0.2.0-m01',
+      version: process.env.APP_VERSION || '0.3.0-m02',
       database: dbOk ? 'connected' : 'disconnected',
       uptimeSeconds: Math.floor(process.uptime()),
     })
@@ -328,8 +329,8 @@ export function createApiRouter() {
     const unusedCodes = req.user.is_owner ? await countUnusedRecoveryCodes(req.user.id) : null
 
     res.json({
-      version: process.env.APP_VERSION || '0.2.0-m01',
-      module: 'M01',
+      version: process.env.APP_VERSION || '0.3.0-m02',
+      module: 'M02',
       environment: process.env.NODE_ENV || 'development',
       database: dbOk ? 'connected' : 'disconnected',
       uptimeSeconds: Math.floor(process.uptime()),
@@ -346,6 +347,7 @@ export function createApiRouter() {
   })
 
   router.use('/admin', createAdminRouter())
+  router.use('/schema', createM02Router())
   router.use('/demo', createDemoRouter())
 
   return router

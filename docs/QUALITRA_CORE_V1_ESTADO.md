@@ -2,7 +2,7 @@
 
 **Documento operativo:** Sí  
 **Plan funcional:** V1.1  
-**Última actualización:** 2 de septiembre de 2026  
+**Última actualización:** 11 de septiembre de 2026  
 **Despliegue staging:** https://qualitra.vector-ia.mx
 
 Este archivo registra el avance. No modifica el alcance funcional maestro.
@@ -12,8 +12,8 @@ Este archivo registra el avance. No modifica el alcance funcional maestro.
 | Módulo | Nombre | Estado |
 | --- | --- | --- |
 | M00 | Base operativa y propietario inicial | APROBADO |
-| M01 | Usuarios, roles y permisos | LISTO PARA VALIDACIÓN HUMANA |
-| M02 | Tipos de registro, campos, catálogos y cálculos | BLOQUEADO |
+| M01 | Usuarios, roles y permisos | APROBADO |
+| M02 | Tipos de registro, campos, catálogos y cálculos | LISTO PARA VALIDACIÓN HUMANA |
 | M03 | Constructor de formularios | BLOQUEADO |
 | M04 | Captura y consulta de registros | BLOQUEADO |
 | M05 | Relaciones entre registros | BLOQUEADO |
@@ -40,6 +40,13 @@ Estados permitidos:
 - APROBADO
 
 ## Validaciones
+
+### M01 — Usuarios, roles y permisos
+
+- **Fecha:** 11 de septiembre de 2026
+- **Resultado:** APROBADO
+- **Decisión:** `continua` (Frank — interfaz visible y acceso restablecido)
+- **Entorno:** https://qualitra.vector-ia.mx (Coolify staging)
 
 ### M00 — Base operativa y propietario inicial
 

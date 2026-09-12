@@ -218,7 +218,12 @@ export function createDemoRouter() {
   router.get('/implementor-tools', requireImplementor, (_req, res) => {
     res.json({
       ok: true,
-      tools: ['exportar_configuracion', 'importar_configuracion', 'validar_dependencias'],
+      tools: [
+        'exportar_tipos_y_catalogos',
+        'importar_tipos_y_catalogos',
+        'probar_expresiones',
+        'validar_dependencias',
+      ],
     })
   })
 

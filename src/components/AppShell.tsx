@@ -65,6 +65,7 @@ export function AppShell({ user, onLogout }: Props) {
           <>
             <NavLink to="/usuarios">Usuarios</NavLink>
             <NavLink to="/roles">Roles</NavLink>
+            <NavLink to="/estructuras">Estructuras</NavLink>
           </>
         )}
         {user.hasImplementorAccess && <NavLink to="/implementador">Implementador</NavLink>}

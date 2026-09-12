@@ -80,6 +80,12 @@ export function formatAction(action: string) {
     'role.deleted': 'Rol eliminado',
     'implementor.granted': 'Acceso Implementador concedido',
     'implementor.revoked': 'Acceso Implementador revocado',
+    'catalog.created': 'Catálogo creado',
+    'record_type.created': 'Tipo de registro creado',
+    'record_type.published': 'Versión de tipo publicada',
+    'm02.demo_seeded': 'Caso demo M02 cargado',
+    'm02.exported': 'Configuración M02 exportada',
+    'm02.imported': 'Configuración M02 importada',
   }
   return map[action] ?? action
 }

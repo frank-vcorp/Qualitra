@@ -393,3 +393,68 @@ td {
   margin-right: 0.25rem;
   margin-bottom: 0.25rem;
 }
+
+.inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.pill {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  margin-right: 0.35rem;
+  background: #eef2f7;
+  color: var(--muted);
+}
+
+.pill.published {
+  background: #ecfdf3;
+  color: var(--success);
+}
+
+.pill.draft {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.pill.archived {
+  background: #f2f4f7;
+  color: var(--muted);
+}
+
+.code-area,
+.code-block {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+}
+
+.code-area {
+  width: 100%;
+  margin-top: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+
+.code-block {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 12px;
+  overflow: auto;
+  margin-top: 1rem;
+}
+
+.btn.small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.file-btn {
+  cursor: pointer;
+}
