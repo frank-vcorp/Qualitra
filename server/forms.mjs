@@ -65,7 +65,8 @@ export async function getFormVersion(versionId) {
   const { rows } = await query(
     `SELECT fv.*, f.name AS form_name, f.slug AS form_slug,
             f.record_type_id, f.record_type_version_id,
-            rt.name AS record_type_name, rtv.schema AS record_schema
+            rt.name AS record_type_name, rt.slug AS record_type_slug,
+            rtv.schema AS record_schema
      FROM form_versions fv
      JOIN forms f ON f.id = fv.form_id
      JOIN record_types rt ON rt.id = f.record_type_id

@@ -88,6 +88,10 @@ export function formatAction(action: string) {
     'm02.imported': 'Configuración M02 importada',
     'form.created': 'Formulario creado',
     'form.published': 'Formulario publicado',
+    'record.created': 'Envío creado',
+    'record.saved': 'Borrador guardado',
+    'record.finalized': 'Envío finalizado',
+    'record.archived': 'Envío archivado',
   }
   return map[action] ?? action
 }

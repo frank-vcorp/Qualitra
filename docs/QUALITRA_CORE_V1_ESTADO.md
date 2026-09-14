@@ -2,10 +2,14 @@
 
 **Documento operativo:** Sí  
 **Plan funcional:** V1.1  
-**Última actualización:** 11 de septiembre de 2026  
+**Última actualización:** 14 de septiembre de 2026  
 **Despliegue staging:** https://qualitra.vector-ia.mx
 
 Este archivo registra el avance. No modifica el alcance funcional maestro.
+
+## Orientación (DEC-001 – DEC-004)
+
+**Qualitra = Webform orientado a calidad y cumplimiento** (DEC-004): formularios dinámicos + captura + trazabilidad + permisos + relaciones. Entrega self-hosted o multitenant (DEC-002/003). Ver `docs/QUALITRA_CORE_V1_DECISIONES.md`.
 
 ## Estado actual
 
@@ -15,7 +19,7 @@ Este archivo registra el avance. No modifica el alcance funcional maestro.
 | M01 | Usuarios, roles y permisos | APROBADO |
 | M02 | Tipos de registro, campos, catálogos y cálculos | APROBADO |
 | M03 | Constructor de formularios | LISTO PARA VALIDACIÓN HUMANA |
-| M04 | Captura y consulta de registros | BLOQUEADO |
+| M04 | Captura y consulta de registros | LISTO PARA VALIDACIÓN HUMANA |
 | M05 | Relaciones entre registros | BLOQUEADO |
 | M06 | Listados, vistas, filtros, dashboard y reportes | BLOQUEADO |
 | M07 | Archivos y evidencias | BLOQUEADO |

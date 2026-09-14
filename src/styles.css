@@ -427,6 +427,11 @@ td {
   color: var(--muted);
 }
 
+.pill.finalized {
+  background: #ecfdf3;
+  color: var(--success);
+}
+
 .code-area,
 .code-block {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

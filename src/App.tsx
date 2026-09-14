@@ -12,6 +12,8 @@ import { PermissionDemoPage } from './pages/PermissionDemoPage'
 import { ImplementorPage } from './pages/ImplementorPage'
 import { SchemaPage } from './pages/SchemaPage'
 import { FormsPage } from './pages/FormsPage'
+import { CapturePage } from './pages/CapturePage'
+import { RecordCapturePage } from './pages/RecordCapturePage'
 import { AppShell } from './components/AppShell'
 import { can } from './types'
 
@@ -124,6 +126,11 @@ export function App() {
           element={user?.hasImplementorAccess ? <ImplementorPage /> : <Navigate to="/" replace />}
         />
         <Route path="permisos" element={user ? <PermissionDemoPage user={user} /> : null} />
+        <Route path="captura" element={user ? <CapturePage user={user} /> : null} />
+        <Route
+          path="captura/registro/:recordId"
+          element={user ? <RecordCapturePage user={user} /> : null}
+        />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

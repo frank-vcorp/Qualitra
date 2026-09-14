@@ -1,4 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+
+export type CaptureData = {
+  fields: Record<string, unknown>
+  groups: Record<string, Array<Record<string, unknown>>>
+}
 
 type LayoutElement = {
   id: string
@@ -41,6 +46,8 @@ type Props = {
   }> | null
   calculationResults?: Record<string, unknown>
   interactive?: boolean
+  initialData?: CaptureData
+  onDataChange?: (data: CaptureData) => void
 }
 
 function isVisible(fieldKey: string, conditions: Condition[], values: Record<string, unknown>) {
@@ -60,11 +67,24 @@ export function FormPreview({
   presentation,
   calculationResults = {},
   interactive = true,
+  initialData,
+  onDataChange,
 }: Props) {
-  const [values, setValues] = useState<Record<string, unknown>>({})
-  const [groups, setGroups] = useState<Record<string, Array<Record<string, unknown>>>>({
-    criterios: [{ concepto: '', calificacion: '', peso: '', observacion: '' }],
-  })
+  const [values, setValues] = useState<Record<string, unknown>>(initialData?.fields ?? {})
+  const [groups, setGroups] = useState<Record<string, Array<Record<string, unknown>>>>(
+    initialData?.groups ?? { criterios: [{ concepto: '', calificacion: '', peso: '', observacion: '' }] },
+  )
+
+  useEffect(() => {
+    if (initialData) {
+      setValues(initialData.fields ?? {})
+      setGroups(initialData.groups ?? {})
+    }
+  }, [initialData])
+
+  useEffect(() => {
+    onDataChange?.({ fields: values, groups })
+  }, [values, groups, onDataChange])
 
   const mergedValues = useMemo(
     () => ({ ...values, ...calculationResults }),
